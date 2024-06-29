@@ -1,7 +1,7 @@
 package com.example.spring_project_4Try.component.controller;
 
 import com.example.spring_project_4Try.component.service.EmployeeService;
-import com.example.spring_project_4Try.programObject.entity.Employee;
+import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("api/employee")
 @RequiredArgsConstructor
@@ -20,53 +23,52 @@ public class EmployeeRestController {
     private final EmployeeService employeeService;
 
     @PostMapping("/create")
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeService.createEmployee(employee);
+    public EmployeeRestDto createEmployee(@RequestBody EmployeeRestDto employeeRestDTO) {
+        return employeeService.createEmployee(employeeRestDTO);
     }
 
     @GetMapping("/getAllEmployees")
-    public java.util.List<Employee> getAllEmployees() {
+    public List<EmployeeRestDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @GetMapping("/getById")
-    public Employee getById(@RequestParam("id") java.util.UUID id) throws Exception {
-        return employeeService.getByIdOrThrown(id);
+    public EmployeeRestDto getById(@RequestParam("id") UUID id) throws Exception {
+        return employeeService.getById(id);
     }
 
     @GetMapping("/getByName")
-    public java.util.List<Employee> getByName(@RequestParam("name") String name) throws Exception {
-        return employeeService.getByNameOrThrown(name);
+    public List<EmployeeRestDto> getByName(@RequestParam("name") String name) throws Exception {
+        return employeeService.getByName(name);
     }
 
     @PatchMapping("/changeToInactive")
-    public Employee changeToInactive(@RequestParam("employee_id") java.util.UUID employeeid) {
-        return employeeService.changeToInactiveOrThrow(employeeid);
+    public EmployeeRestDto changeToInactive(@RequestParam("employee_id") UUID employeeid) {
+        return employeeService.changeToInactive(employeeid);
     }
 
     @PatchMapping("/changeToActive")
-    public Employee changeToActive(@RequestParam("employee_id") java.util.UUID employeeid) {
-        return employeeService.changeToActiveOrThrow(employeeid);
+    public EmployeeRestDto changeToActive(@RequestParam("employee_id") UUID employeeid) {
+        return employeeService.changeToActive(employeeid);
     }
 
-
     @PatchMapping("/changeName")
-    public Employee changeName(@RequestParam("employee_id") java.util.UUID employeeid, @RequestParam("name") String name) {
-        return employeeService.changeNameOrThrow(employeeid, name);
+    public EmployeeRestDto changeName(@RequestParam("employee_id") UUID employeeid, @RequestParam("name") String name) {
+        return employeeService.changeName(employeeid, name);
     }
 
     @PatchMapping("/changeAddress")
-    public Employee changeAddress(@RequestParam("employee_id") java.util.UUID employeeid, @RequestParam("address") String address) {
-        return employeeService.changeAddressOrThrow(employeeid, address);
+    public EmployeeRestDto changeAddress(@RequestParam("employee_id") UUID employeeid, @RequestParam("address") String address) {
+        return employeeService.changeAddress(employeeid, address);
     }
 
     @PatchMapping("/changeTelephone")
-    public Employee changeTelephone(@RequestParam("employee_id") java.util.UUID employeeid, @RequestParam("telephone") Integer telephone) {
-        return employeeService.changeTelephoneOrThrow(employeeid, telephone);
+    public EmployeeRestDto changeTelephone(@RequestParam("employee_id") UUID employeeid, @RequestParam("telephone") Integer telephone) {
+        return employeeService.changeTelephone(employeeid, telephone);
     }
 
     @DeleteMapping("/deleteTelephone")
-    public Employee deleteTelephone(@RequestParam("employee_id") java.util.UUID employeeid) {
-        return employeeService.deleteTelephoneOrThrow(employeeid);
+    public EmployeeRestDto deleteTelephone(@RequestParam("employee_id") UUID employeeid) {
+        return employeeService.deleteTelephone(employeeid);
     }
 }
