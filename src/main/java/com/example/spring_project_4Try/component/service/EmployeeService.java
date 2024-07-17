@@ -1,11 +1,14 @@
+
 package com.example.spring_project_4Try.component.service;
 
 import com.example.spring_project_4Try.enumeration.StatusEmployee;
 import com.example.spring_project_4Try.exception.NotFoundException;
 import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
-import com.example.spring_project_4Try.programObject.mapper.DtoMapper;
-import com.example.spring_project_4Try.programObject.mapper.EmployeeEntityMapper;
-import com.example.spring_project_4Try.programObject.model.EmployeeEntity;
+import com.example.spring_project_4Try.programObject.entity.AddressEntity;
+import com.example.spring_project_4Try.programObject.entity.TelephoneEntity;
+import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeDtoMapper;
+import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeEntityMapper;
+import com.example.spring_project_4Try.programObject.entity.EmployeeEntity;
 import com.example.spring_project_4Try.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,30 +24,30 @@ import java.util.UUID;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final DtoMapper dtoMapper;
+    private final EmployeeDtoMapper employeeDtoMapper;
     private final EmployeeEntityMapper employeeEntityMapper;
 
     public EmployeeRestDto createEmployee(EmployeeRestDto employeeRestDTO) {
 
         EmployeeEntity employeeEntity = employeeEntityMapper.toEntity(employeeRestDTO);
         employeeRepository.save(employeeEntity);
-        return dtoMapper.toDto(employeeEntity);
+        return employeeDtoMapper.toDto(employeeEntity);
     }
 
     public List<EmployeeRestDto> getAllEmployees() {
 
         List<EmployeeEntity> employees = new ArrayList<>();
         employees.addAll(employeeRepository.findAll());
-        return dtoMapper.toDtos(employees);
+        return employeeDtoMapper.toDtos(employees);
     }
 
-    public EmployeeRestDto getById(UUID id) {
+    public EmployeeRestDto getById(UUID employeeid) {
 
-        Optional<EmployeeEntity> employeeData = employeeRepository.findById(id);
+        Optional<EmployeeEntity> employeeData = employeeRepository.findById(employeeid);
         if (employeeData.isPresent()) {
-            return dtoMapper.toDto(employeeData.get());
+            return employeeDtoMapper.toDto(employeeData.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
@@ -52,9 +55,9 @@ public class EmployeeService {
 
         List<EmployeeEntity> employeeData = employeeRepository.findByName(name);
         if (!employeeData.isEmpty())
-            return dtoMapper.toDtos(employeeData);
+            return employeeDtoMapper.toDtos(employeeData);
         else
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с именем - %s не найден", name));
     }
 
     public EmployeeRestDto changeToInactive(@RequestParam("employee_id") UUID employeeid) {
@@ -63,9 +66,9 @@ public class EmployeeService {
         if (employee.isPresent()) {
             employee.get().setStatus(StatusEmployee.INACTIVE);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
@@ -76,9 +79,9 @@ public class EmployeeService {
         if (employee.isPresent()) {
             employee.get().setStatus(StatusEmployee.ACTIVE);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
@@ -88,33 +91,33 @@ public class EmployeeService {
         if (employee.isPresent()) {
             employee.get().setName(name);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
-    public EmployeeRestDto changeAddress(UUID employeeid, String address) {
+    public EmployeeRestDto changeAddress(UUID employeeid, List<AddressEntity> addresses) {
 
         Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
         if (employee.isPresent()) {
-            employee.get().setAddress(address);
+            employee.get().setAddresses(addresses);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
-    public EmployeeRestDto changeTelephone(UUID employeeid, Integer telephone) {
+    public EmployeeRestDto changeTelephone(UUID employeeid, List<TelephoneEntity> phones) {
 
         Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
         if (employee.isPresent()) {
-            employee.get().setTelephone(telephone);
+            employee.get().setPhones(phones);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 
@@ -122,11 +125,26 @@ public class EmployeeService {
 
         Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
         if (employee.isPresent()) {
-            employee.get().setTelephone(null);
+            employee.get().setPhones(null);
             employeeRepository.save(employee.get());
-            return dtoMapper.toDto(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
         } else {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+        }
+    }
+
+    public EmployeeRestDto deleteEmployee(@RequestParam("employee_id") UUID employeeid) {
+
+        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
+        if (employee.isPresent()) {
+            employeeRepository.delete(employee.get());
+            return employeeDtoMapper.toDto(employee.get());
+        } else {
+            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
     }
 }
+
+
+
+

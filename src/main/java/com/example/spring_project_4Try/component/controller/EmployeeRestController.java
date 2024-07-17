@@ -1,7 +1,10 @@
+
 package com.example.spring_project_4Try.component.controller;
 
 import com.example.spring_project_4Try.component.service.EmployeeService;
 import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
+import com.example.spring_project_4Try.programObject.entity.AddressEntity;
+import com.example.spring_project_4Try.programObject.entity.TelephoneEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,17 +61,24 @@ public class EmployeeRestController {
     }
 
     @PatchMapping("/changeAddress")
-    public EmployeeRestDto changeAddress(@RequestParam("employee_id") UUID employeeid, @RequestParam("address") String address) {
-        return employeeService.changeAddress(employeeid, address);
+    public EmployeeRestDto changeAddress(@RequestParam("employee_id") UUID employeeid, @RequestParam("address") List<AddressEntity> addresses) {
+        return employeeService.changeAddress(employeeid, addresses);
     }
 
     @PatchMapping("/changeTelephone")
-    public EmployeeRestDto changeTelephone(@RequestParam("employee_id") UUID employeeid, @RequestParam("telephone") Integer telephone) {
-        return employeeService.changeTelephone(employeeid, telephone);
+    public EmployeeRestDto changeTelephone(@RequestParam("employee_id") UUID employeeid, @RequestParam("telephone") List<TelephoneEntity> phones) {
+        return employeeService.changeTelephone(employeeid, phones);
     }
 
     @DeleteMapping("/deleteTelephone")
     public EmployeeRestDto deleteTelephone(@RequestParam("employee_id") UUID employeeid) {
         return employeeService.deleteTelephone(employeeid);
     }
+
+    @DeleteMapping("/deleteEmployee")
+    public EmployeeRestDto deleteEmployee(@RequestParam("employee_id") UUID employeeid){
+        return employeeService.deleteEmployee(employeeid);
+    }
 }
+
+
