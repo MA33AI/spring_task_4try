@@ -18,7 +18,7 @@ public class TelephoneRestController {
     private final TelephoneService telephoneService;
 
     @PostMapping("/create")
-    public TelephoneRestDto createEmployee(@RequestBody TelephoneRestDto telephoneRestDto) {
+    public TelephoneRestDto createTelephone(@RequestBody TelephoneRestDto telephoneRestDto) {
         return telephoneService.createTelephone(telephoneRestDto);
     }
 }

@@ -1,9 +1,11 @@
 package com.example.spring_project_4Try.programObject.entity;
 
 import com.example.spring_project_4Try.enumeration.StatusEmployee;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,9 +34,9 @@ public class EmployeeEntity {
     private String name;
     @Enumerated
     private StatusEmployee status;
-    @OneToMany(mappedBy = "employeeEntity")
+    @OneToMany(mappedBy = "employeeEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TelephoneEntity> phones;
-    @OneToMany(mappedBy = "employeeEntity")
+    @OneToMany(mappedBy = "employeeEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AddressEntity> addresses;
     @CreatedDate
     private LocalDateTime createdAt;

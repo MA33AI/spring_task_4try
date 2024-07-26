@@ -18,7 +18,7 @@ public class AddressRestController {
     private final AddressService addressService;
 
     @PostMapping("/create")
-    public AddressRestDto createEmployee(@RequestBody AddressRestDto addressRestDto) {
+    public AddressRestDto createAddress(@RequestBody AddressRestDto addressRestDto) {
         return addressService.createAddress(addressRestDto);
     }
 }
