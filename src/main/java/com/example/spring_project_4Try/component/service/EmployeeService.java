@@ -3,13 +3,16 @@ package com.example.spring_project_4Try.component.service;
 
 import com.example.spring_project_4Try.enumeration.StatusEmployee;
 import com.example.spring_project_4Try.exception.NotFoundException;
+import com.example.spring_project_4Try.programObject.dto.AddressRestDto;
 import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
 import com.example.spring_project_4Try.programObject.entity.AddressEntity;
 import com.example.spring_project_4Try.programObject.entity.TelephoneEntity;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeDtoMapper;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeEntityMapper;
 import com.example.spring_project_4Try.programObject.entity.EmployeeEntity;
+import com.example.spring_project_4Try.repository.AddressRepository;
 import com.example.spring_project_4Try.repository.EmployeeRepository;
+import com.example.spring_project_4Try.repository.TelephoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,13 +27,27 @@ import java.util.UUID;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final AddressRepository addressRepository;
+    private final TelephoneRepository telephoneRepository;
+
     private final EmployeeDtoMapper employeeDtoMapper;
     private final EmployeeEntityMapper employeeEntityMapper;
 
     public EmployeeRestDto createEmployee(EmployeeRestDto employeeRestDTO) {
 
         EmployeeEntity employeeEntity = employeeEntityMapper.toEntity(employeeRestDTO);
+        List<AddressEntity> addresses = employeeEntity.getAddresses();
+        List<TelephoneEntity> telephones = employeeEntity.getPhones();
+        for(AddressEntity address : addresses){
+            address.setEmployeeEntity(employeeEntity);
+        }
+        for(TelephoneEntity telephone : telephones){
+            telephone.setEmployeeEntity(employeeEntity);
+        }
         employeeRepository.save(employeeEntity);
+        addressRepository.saveAll(addresses);
+        telephoneRepository.saveAll(telephones);
+
         return employeeDtoMapper.toDto(employeeEntity);
     }
 
@@ -43,9 +60,9 @@ public class EmployeeService {
 
     public EmployeeRestDto getById(UUID employeeid) {
 
-        Optional<EmployeeEntity> employeeData = employeeRepository.findById(employeeid);
-        if (employeeData.isPresent()) {
-            return employeeDtoMapper.toDto(employeeData.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -62,11 +79,11 @@ public class EmployeeService {
 
     public EmployeeRestDto changeToInactive(@RequestParam("employee_id") UUID employeeid) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employee.get().setStatus(StatusEmployee.INACTIVE);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setStatus(StatusEmployee.INACTIVE);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -74,12 +91,12 @@ public class EmployeeService {
 
     public EmployeeRestDto changeToActive(UUID employeeid) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
 
-        if (employee.isPresent()) {
-            employee.get().setStatus(StatusEmployee.ACTIVE);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setStatus(StatusEmployee.ACTIVE);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -87,11 +104,11 @@ public class EmployeeService {
 
     public EmployeeRestDto changeName(UUID employeeid, String name) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employee.get().setName(name);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setName(name);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -99,11 +116,11 @@ public class EmployeeService {
 
     public EmployeeRestDto changeAddress(UUID employeeid, List<AddressEntity> addresses) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employee.get().setAddresses(addresses);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setAddresses(addresses);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -111,11 +128,11 @@ public class EmployeeService {
 
     public EmployeeRestDto changeTelephone(UUID employeeid, List<TelephoneEntity> phones) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employee.get().setPhones(phones);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setPhones(phones);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -123,11 +140,11 @@ public class EmployeeService {
 
     public EmployeeRestDto deleteTelephone(@RequestParam("employee_id") UUID employeeid) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employee.get().setPhones(null);
-            employeeRepository.save(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeOptional.get().setPhones(null);
+            employeeRepository.save(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }
@@ -135,10 +152,10 @@ public class EmployeeService {
 
     public EmployeeRestDto deleteEmployee(@RequestParam("employee_id") UUID employeeid) {
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeid);
-        if (employee.isPresent()) {
-            employeeRepository.delete(employee.get());
-            return employeeDtoMapper.toDto(employee.get());
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
+        if (employeeOptional.isPresent()) {
+            employeeRepository.delete(employeeOptional.get());
+            return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
             throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
         }

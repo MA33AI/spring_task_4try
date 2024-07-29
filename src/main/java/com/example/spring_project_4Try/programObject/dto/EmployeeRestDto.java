@@ -27,8 +27,8 @@ public class EmployeeRestDto {
     private UUID id;
     private String name;
     private StatusEmployee status;
-    private List<TelephoneEntity> phones;
     private List<AddressEntity> addresses;
+    private List<TelephoneEntity> phones;
 }
 
 

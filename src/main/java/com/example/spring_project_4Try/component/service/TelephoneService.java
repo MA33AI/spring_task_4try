@@ -27,10 +27,10 @@ public class TelephoneService {
     public TelephoneRestDto createTelephone(TelephoneRestDto telephoneRestDto){
 
         UUID employeeid = telephoneRestDto.getIdEmployee();
-        Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(employeeid);
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
         TelephoneEntity telephoneEntity = telephoneEntityMapper.toEntity(telephoneRestDto);
-        if(employeeEntity.isPresent()){
-            telephoneEntity.setEmployeeEntity(employeeEntity.get());
+        if(employeeOptional.isPresent()){
+            telephoneEntity.setEmployeeEntity(employeeOptional.get());
             telephoneRepository.save(telephoneEntity);
             TelephoneRestDto telephoneRestDtoOut = telephoneDtoMapper.toDto(telephoneEntity);
             telephoneRestDtoOut.setIdEmployee(employeeid);

@@ -28,10 +28,10 @@ public class AddressService {
     public AddressRestDto createAddress(AddressRestDto addressRestDto){
 
         UUID employeeid = addressRestDto.getIdEmployee();
-        Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(employeeid);
+        Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
         AddressEntity addressEntity = addressEntityMapper.toEntity(addressRestDto);
-        if(employeeEntity.isPresent()){
-            addressEntity.setEmployeeEntity(employeeEntity.get());
+        if(employeeOptional.isPresent()){
+            addressEntity.setEmployeeEntity(employeeOptional.get());
             addressRepository.save(addressEntity);
             AddressRestDto addressRestDtoOut = addressDtoMapper.toDto(addressEntity);
             addressRestDtoOut.setIdEmployee(employeeid);
