@@ -10,6 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,14 +31,20 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class EmployeeEntity {
 
+    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 1, max = 30, message = "Name need be between 1 and 30")
     private String name;
+    @NotNull(message = "Status cannot be null")
     @Enumerated
     private StatusEmployee status;
+    @NotEmpty(message = "List phones cannot be null")
     @OneToMany(mappedBy = "employeeEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TelephoneEntity> phones;
+    @NotEmpty(message = "List addresses cannot be null")
     @OneToMany(mappedBy = "employeeEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AddressEntity> addresses;
     @CreatedDate

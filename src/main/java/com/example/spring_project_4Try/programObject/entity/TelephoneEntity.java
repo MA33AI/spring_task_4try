@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,16 +29,21 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class TelephoneEntity {
 
+    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    @Size(min = 1, max = 20, message = "CodeCountry need be between 1 and 5")
     private String codeCountry;
+    @Size(min = 1, max = 20, message = "CodeCity need be between 1 and 5")
     private String codeCity;
+    @Size(min = 1, max = 20, message = "number need be between 1 and 10")
     private String number;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime createdUp;
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id")
     private EmployeeEntity employeeEntity;

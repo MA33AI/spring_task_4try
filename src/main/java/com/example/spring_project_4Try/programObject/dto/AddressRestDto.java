@@ -26,7 +26,6 @@ public class AddressRestDto {
     private String city;
     private String street;
     private String house;
-    private UUID idEmployee;
 }
 
 

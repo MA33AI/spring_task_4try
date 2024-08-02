@@ -24,5 +24,4 @@ public class TelephoneRestDto {
     private String codeCountry;
     private String codeCity;
     private String number;
-    private UUID idEmployee;
 }

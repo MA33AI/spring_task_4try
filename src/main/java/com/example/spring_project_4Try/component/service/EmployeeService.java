@@ -3,13 +3,16 @@ package com.example.spring_project_4Try.component.service;
 
 import com.example.spring_project_4Try.enumeration.StatusEmployee;
 import com.example.spring_project_4Try.exception.NotFoundException;
-import com.example.spring_project_4Try.programObject.dto.AddressRestDto;
 import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
 import com.example.spring_project_4Try.programObject.entity.AddressEntity;
+import com.example.spring_project_4Try.programObject.entity.EmployeeEntity;
 import com.example.spring_project_4Try.programObject.entity.TelephoneEntity;
+import com.example.spring_project_4Try.programObject.mapper.addressMapper.AddressDtoMapper;
+import com.example.spring_project_4Try.programObject.mapper.addressMapper.AddressEntityMapper;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeDtoMapper;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeEntityMapper;
-import com.example.spring_project_4Try.programObject.entity.EmployeeEntity;
+import com.example.spring_project_4Try.programObject.mapper.telephoneMapper.TelephoneDtoMapper;
+import com.example.spring_project_4Try.programObject.mapper.telephoneMapper.TelephoneEntityMapper;
 import com.example.spring_project_4Try.repository.AddressRepository;
 import com.example.spring_project_4Try.repository.EmployeeRepository;
 import com.example.spring_project_4Try.repository.TelephoneRepository;
@@ -27,8 +30,6 @@ import java.util.UUID;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final AddressRepository addressRepository;
-    private final TelephoneRepository telephoneRepository;
 
     private final EmployeeDtoMapper employeeDtoMapper;
     private final EmployeeEntityMapper employeeEntityMapper;
@@ -36,19 +37,26 @@ public class EmployeeService {
     public EmployeeRestDto createEmployee(EmployeeRestDto employeeRestDTO) {
 
         EmployeeEntity employeeEntity = employeeEntityMapper.toEntity(employeeRestDTO);
-        List<AddressEntity> addresses = employeeEntity.getAddresses();
-        List<TelephoneEntity> telephones = employeeEntity.getPhones();
-        for(AddressEntity address : addresses){
+        initEmployeeInAddressesAndPhones(employeeEntity);
+        employeeRepository.save(employeeEntity);
+        return employeeDtoMapper.toDto(employeeEntity);
+    }
+
+    private void initEmployeeInAddressesAndPhones(EmployeeEntity employeeEntity) {
+        initEmployeeInAddresses(employeeEntity);
+        initEmployeeInPhones(employeeEntity);
+    }
+
+    private void initEmployeeInAddresses(EmployeeEntity employeeEntity) {
+        for (AddressEntity address : employeeEntity.getAddresses()) {
             address.setEmployeeEntity(employeeEntity);
         }
-        for(TelephoneEntity telephone : telephones){
+    }
+
+    private void initEmployeeInPhones(EmployeeEntity employeeEntity) {
+        for (TelephoneEntity telephone : employeeEntity.getPhones()) {
             telephone.setEmployeeEntity(employeeEntity);
         }
-        employeeRepository.save(employeeEntity);
-        addressRepository.saveAll(addresses);
-        telephoneRepository.saveAll(telephones);
-
-        return employeeDtoMapper.toDto(employeeEntity);
     }
 
     public List<EmployeeRestDto> getAllEmployees() {
