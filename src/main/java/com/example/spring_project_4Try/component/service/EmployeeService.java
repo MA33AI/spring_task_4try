@@ -2,20 +2,15 @@
 package com.example.spring_project_4Try.component.service;
 
 import com.example.spring_project_4Try.enumeration.StatusEmployee;
-import com.example.spring_project_4Try.exception.NotFoundException;
+import com.example.spring_project_4Try.exception.EmployeeExceptionHandler.EmployeeNotFoundByIdException;
+import com.example.spring_project_4Try.exception.EmployeeExceptionHandler.EmployeeNotFoundByNameException;
 import com.example.spring_project_4Try.programObject.dto.EmployeeRestDto;
 import com.example.spring_project_4Try.programObject.entity.AddressEntity;
 import com.example.spring_project_4Try.programObject.entity.EmployeeEntity;
 import com.example.spring_project_4Try.programObject.entity.TelephoneEntity;
-import com.example.spring_project_4Try.programObject.mapper.addressMapper.AddressDtoMapper;
-import com.example.spring_project_4Try.programObject.mapper.addressMapper.AddressEntityMapper;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeDtoMapper;
 import com.example.spring_project_4Try.programObject.mapper.employeeMapper.EmployeeEntityMapper;
-import com.example.spring_project_4Try.programObject.mapper.telephoneMapper.TelephoneDtoMapper;
-import com.example.spring_project_4Try.programObject.mapper.telephoneMapper.TelephoneEntityMapper;
-import com.example.spring_project_4Try.repository.AddressRepository;
 import com.example.spring_project_4Try.repository.EmployeeRepository;
-import com.example.spring_project_4Try.repository.TelephoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,7 +67,7 @@ public class EmployeeService {
         if (employeeOptional.isPresent()) {
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -82,10 +77,10 @@ public class EmployeeService {
         if (!employeeData.isEmpty())
             return employeeDtoMapper.toDtos(employeeData);
         else
-            throw new NotFoundException(String.format("Пользователь с именем - %s не найден", name));
+            throw new EmployeeNotFoundByNameException(name);
     }
 
-    public EmployeeRestDto changeToInactive(@RequestParam("employee_id") UUID employeeid) {
+    public EmployeeRestDto changeToInactive(UUID employeeid) {
 
         Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(employeeid);
         if (employeeOptional.isPresent()) {
@@ -93,7 +88,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -106,7 +101,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -118,7 +113,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -130,7 +125,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -142,7 +137,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -154,7 +149,7 @@ public class EmployeeService {
             employeeRepository.save(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 
@@ -165,7 +160,7 @@ public class EmployeeService {
             employeeRepository.delete(employeeOptional.get());
             return employeeDtoMapper.toDto(employeeOptional.get());
         } else {
-            throw new NotFoundException(String.format("Пользователь с id - %s не найден", employeeid));
+            throw new EmployeeNotFoundByIdException(employeeid);
         }
     }
 }

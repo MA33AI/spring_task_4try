@@ -1,7 +1,6 @@
 package com.example.spring_project_4Try.programObject.entity;
 
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -45,7 +44,7 @@ public class TelephoneEntity {
     private LocalDateTime createdUp;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="employee_id")
+    @JoinColumn(name = "employee_id")
     private EmployeeEntity employeeEntity;
 }
 
